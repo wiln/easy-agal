@@ -66,4 +66,12 @@ Others will say, "If you take the time to learn AGAL properly, you'll be able to
 
 [http://studio.barliesque.com/images/easy-agal-code-hinting.png]
 
-AGAL is not easy, but hopefully this library will make it easier, and assist your learning experience.
+
+== Happy Trails ==
+AGAL is not easy, but hopefully this library will make it easier, and assist your learning experience.  Here are some excellent links to tutorials and introductions to AGAL and the Molehill API:
+
+[http://iflash3d.com/shaders/my-name-is-agal-i-come-from-adobe-1/ My Name is AGAL, and I Come from Adobe] by Marco Scabia
+
+[http://labs.jam3.ca/2011/03/molehill-getting-started/ Molehill - Getting Started] by Mikko Haapoja
+
+[http://pgstudios.org/tutorials.php Tutorials] by Pixelante
