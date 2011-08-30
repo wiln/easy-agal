@@ -22,8 +22,8 @@ package {
 		private var stage3D:Stage3D;
 		private var shader:BasicRender;
 		
-		private const STAGE_WIDTH:Number = 600;
-		private const STAGE_HEIGHT:Number = 600;
+		private const CONTEXT_WIDTH:Number = 600;
+		private const CONTEXT_HEIGHT:Number = 600;
 		
 		private const DEGS_TO_RADIANS:Number = Math.PI / 180;
 		
@@ -50,7 +50,7 @@ package {
 			context = stage3D.context3D;
 			
 			// Configure back buffer
-			context.configureBackBuffer(STAGE_WIDTH, STAGE_HEIGHT, 2, true);
+			context.configureBackBuffer(CONTEXT_WIDTH, CONTEXT_HEIGHT, 2, true);
 			stage3D.x = stage3D.y = 0;
 			
 			// Prepare vertex data
@@ -86,7 +86,7 @@ package {
 		
 		
 		public function makeViewMatrix():Matrix3D {
-			var aspect:Number = STAGE_WIDTH / STAGE_HEIGHT;
+			var aspect:Number = CONTEXT_WIDTH / CONTEXT_HEIGHT;
 			var zNear:Number = 0.01;
 			var zFar:Number = 1000;
 			var fov:Number = 45 * DEGS_TO_RADIANS;
