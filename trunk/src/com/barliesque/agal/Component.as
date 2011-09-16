@@ -4,7 +4,7 @@ package com.barliesque.agal {
 	 * 
 	 * @author David Barlia
 	 */
-	internal class Component implements IComponent {
+	internal class Component implements IField {
 			 
 			 private var name:String;
 			 private var register:String;
