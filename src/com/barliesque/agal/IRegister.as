@@ -18,7 +18,7 @@ package com.barliesque.agal {
 		function get xyz():Component;
 		function get rgb():Component;
 		
-		/// Specify any register compenents, e.g. "zyx" "xxxx" "wwww" "rrb" "rgg"
+		/// Specify any register components, e.g. "zyx" "xxxx" "wwww" "rrb" "rg"
 		function _(xyzwrgba:String):Component;
 	}
 	
