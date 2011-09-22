@@ -6,10 +6,7 @@ package com.barliesque.shaders.macro {
 	/**
 	 * Utility functions to include in shader code
 	 * 
-	 * NOTE:  Most of these macro functions have not yet been tested.
-	 * If you discover an issue, please let me know:  barliesque@gmail.com
-	 * 
-	 * @author David Barlia
+	 * @author David Barlia, barliesque@gmail.com
 	 */
 	public class Utils extends EasierAGAL {
 		
