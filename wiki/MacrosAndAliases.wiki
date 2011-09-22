@@ -5,7 +5,7 @@ In this article I'll show you how you can create and use a library of macro func
 
 In case the term is unfamiliar to you, a _macro_ is similar to a function in that it's a bit of code that gets used and re-used repeatedly.  The difference is that, where a function exists in one place in memory and is called by multiple points in an application, a macro is literally duplicated wherever it's needed at compile-time.  Presently, there is no way for AGAL to redirect program execution to call a function, or branch or loop -- AGAL programs are executed in a straight shot, from top to bottom.  So, in place of functions we must use macros.
 
-Wherever you use a function from the Easy/EasierAGAL library, instructions are appended to whatever code is being assembled at the time.  So you can write a set of handy static functions in their own class, to be called as needed.  You can pass EasyAGAL registers as parameters, or any other data that may be useful to customize the macro.
+Wherever you use a function from the Easy/EasierAGAL library, instructions are appended to whatever code is being assembled at the time.  So you can write a set of handy static functions in their own class, to be called as needed.  You can pass EasyAGAL registers as parameters, or any other data that may be useful to customize the macro.  And you can organize your macros along with the rest of your ActionScript classes into logical packages so they're nice and easy to find when you need them.
 
 == Interface types ==
 
