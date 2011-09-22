@@ -10,7 +10,6 @@ package {
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.geom.Matrix3D;
-	import flash.geom.PerspectiveProjection;
 	import flash.geom.Vector3D;
 	import flash.utils.getTimer;
 	
@@ -72,7 +71,7 @@ package {
 				0, 2, 3		// <-- 2nd Triangle
 			]);
 			
-			// Prep the bitmap data to be used asa texture
+			// Prep the bitmap data to be used as a texture
 			var texture:BitmapData = (new textureClass() as Bitmap).bitmapData;
 			
 			// Prepare a shader for rendering
