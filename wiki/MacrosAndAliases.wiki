@@ -1,7 +1,7 @@
 #labels Featured
 = Macros and Aliases =
 
-In this article I'll show you how you can create and use a library of macro functions written with EasyAGAL.  
+In this article I'll show you how you can create and use a library of macro functions written with EasyAGAL.  The more macros we have to work with, the more AGAL can begin to feel like a higher level language.
 
 In case the term is unfamiliar to you, a _macro_ is similar to a function in that it's a bit of code that gets used and re-used repeatedly.  The difference is that, where a function exists in one place in memory and is called by multiple points in an application, a macro is literally duplicated wherever it's needed at compile-time.  Presently, there is no way for AGAL to redirect program execution to call a function, or branch or loop -- AGAL programs are executed in a straight shot, from top to bottom.  So, in place of functions we must use macros.
 
@@ -17,7 +17,7 @@ When you define function parameters, or alias variables, you have three options 
 
   * *`IField`* - This type specifies any AGAL register -- either the whole register, or a selection of components.
 
-So, for example, we can use variables as aliases to registers, like so:
+So, for example, we can use ActionScript variables as aliases to AGAL registers, like so:
 
 {{{
 	var position:IRegister = ATTRIBUTE[0];
@@ -60,7 +60,7 @@ As if you didn't already know how to call a static function!  Anyway, you'll fin
 
 == Other Parameter Types ==
 
-The more macros we have to work with, the more AGAL can feel like a higher level language.  Here's another macro from the `Utils` class which I think illustrates my point:
+Obviously, when writing macros you can specify whatever parameter types you want, not just AGAL registers.  Have a look at the parameter list of the following function, specifically the `comparison` parameter.
 
 {{{
 	static public const EQUAL:String = "equal";
@@ -74,7 +74,7 @@ The more macros we have to work with, the more AGAL can feel like a higher level
 	 * Return one of two results, based on a comparison of two values, componentwise
 	 * dest = (operandA compared with operandB) ? trueResult : falseResult
 	 * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
-	 * @param	temp		A temporary register that can be utilized for this operation
+	 * @param	temp		A temporary register that will be utilized for this operation
 	 */
 	static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField,
 		trueResult:IField, falseResult:IField, temp:IRegister):void {
@@ -126,7 +126,7 @@ The more macros we have to work with, the more AGAL can feel like a higher level
 	}
 }}}
 
-So, now I can perform a comparison and get a result value in a single line.  Obviously, when writing macros you can specify whatever parameter types you want, not just AGAL registers.  Have a look at the parameter list of the function itself, specifically the "comparison" parameter.
+So, now I can perform a comparison and get a result value in a single line...
 
 {{{
 	//
