@@ -8,7 +8,6 @@ package {
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.geom.Matrix3D;
-	import flash.geom.PerspectiveProjection;
 	import flash.geom.Vector3D;
 	import flash.utils.getTimer;
 	

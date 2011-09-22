@@ -129,9 +129,12 @@ package com.barliesque.agal {
 		
 		/// Add a comment to the opcode.  Helpful if you want to examine the opcode constructed by EasyAGAL.
 		/// Commenting is disabled when EasyAGAL::debug is set to false.
-		static protected function comment(remarks:String):void {
+		static protected function comment(...remarks):void {
 			// if (Assembler.assemblingDebug) {
-				Assembler.append("\n// " + remarks, false);
+				Assembler.append("\n", false);
+				for (var i:int = 0; i < remarks.length; i++) {
+					Assembler.append("// " + remarks[i], false);
+				}
 			// }
 		}
 		
