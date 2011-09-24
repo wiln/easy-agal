@@ -132,7 +132,7 @@ So, now I can perform a comparison and get a result value in a single line...
 	//
 	// OUTPUT = (TEMP[1] <= CONST[0]) ? CONST[2] : CONST[3]
 	//
-	Utils.setByComparison(OUTPUT, TEMP[1], Utils.LESS_OR_EQUAL, CONST[2], CONST[3], TEMP[2]);
+	Utils.setByComparison(OUTPUT, TEMP[1], Utils.LESS_OR_EQUAL, CONST[0], CONST[2], CONST[3], TEMP[2]);
 }}}
 
 == Watch Your Operation Count ==
