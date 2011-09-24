@@ -144,4 +144,4 @@ Do be careful how you use macros, however.  It's easy to forget that a single ma
 	trace("Operations in the shader program: " + fragmentInstructions);
 }}}
 
-Note: EasyAGAL calls your opcode writing functions when you call the `upload()` function... so be sure to check these properties _after_ the `update()` call.
+Note: EasyAGAL calls your opcode writing functions when you call the `upload()` function... so be sure to check these properties _after_ the `upload()` call.
