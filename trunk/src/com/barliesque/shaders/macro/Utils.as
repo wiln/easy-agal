@@ -24,14 +24,17 @@ package com.barliesque.shaders.macro {
 		 * dest = (operandA compared with operandB) ? trueResult : falseResult
 		 * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
 		 * @param	temp		A temporary register that will be utilized for this operation
+		 * @param	temp2		A temporary register that will be utilized for this operation
 		 */
 		static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, trueResult:IField, falseResult:IField, temp:IRegister):void {
 			
 			// First make the requested comparison
 			switch (comparison) {
 				case LESS_OR_EQUAL:
-					setIf_LessThan(dest, operandA, operandB);
-					setIf_Equal(temp, operandA, operandB);
+					setIf_GreaterEqual(dest, operandA, operandB);
+					setIf_GreaterEqual(temp, operandB, operandA);
+					min(dest, dest, temp);  // Combine results (AND)
+					setIf_LessThan(temp, operandA, operandB);
 					max(dest, dest, temp);  // Combine results (OR)
 					break;
 					
@@ -40,11 +43,11 @@ package com.barliesque.shaders.macro {
 					break;
 					
 				case EQUAL:
-					setIf_Equal(dest, operandA, operandB);
+					setIf_Equal(dest, operandA, operandB, temp);
 					break;
 					
 				case NOT_EQUAL:
-					setIf_NotEqual(dest, operandA, operandB);
+					setIf_NotEqual(dest, operandA, operandB, temp);
 					break;
 					
 				case LESS_THAN:
@@ -52,9 +55,11 @@ package com.barliesque.shaders.macro {
 					break;
 					
 				case GREATER_THAN:
-					setIf_GreaterEqual(dest, operandA, operandB);
-					setIf_NotEqual(temp, operandA, operandB);
-					min(dest, dest, temp);  // Combine results (AND)
+					setIf_LessThan(dest, operandA, operandB);
+					setIf_LessThan(temp, operandB, operandA);
+					max(dest, dest, temp);  // Combine results (OR) ...If either is true, A and B are not equal
+					setIf_GreaterEqual(temp, operandA, operandB);
+					min(dest, dest, temp);  // Combine results (AND) ...If both are true, A > B
 					break;
 					
 				default:
@@ -62,8 +67,8 @@ package com.barliesque.shaders.macro {
 			}
 			
 			// Set the temporary to the inverse of the comparison
-			subtract(temp, temp, temp); // All zero
-			setIf_Equal(temp, temp, dest); // If dest is 1, temp is 0, and vice versa
+			setOne(temp);
+			subtract(temp, temp, dest);  //  temp = 1 - dest
 			
 			// Now apply result values to each
 			multiply(dest, dest, trueResult);
@@ -90,7 +95,7 @@ package com.barliesque.shaders.macro {
 		 */
 		static public function setOne(dest:IField):void {
 			// Is (dest == dest)?  Of course!  So result is always 1.0
-			setIf_Equal(dest, dest, dest);
+			setIf_GreaterEqual(dest, dest, dest);
 		}
 		
 		
@@ -99,8 +104,8 @@ package com.barliesque.shaders.macro {
 		 * @param	dest	A register whose components will set to handy constant values
 		 */
 		static public function setTwoOneZeroHalf(dest:IRegister):void {
-			subtract(dest.z, dest.z, dest.z);		// z = zero
-			setIf_Equal(dest.y, dest.y, dest.y);	// y = one
+			setZero(dest.z);						// z = zero
+			setOne(dest.y);							// y = one
 			add(dest.x, dest.y, dest.y);			// x = two
 			divide(dest.w, dest.y, dest.x);			// w = half
 		}

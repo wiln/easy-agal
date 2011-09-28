@@ -150,6 +150,29 @@ package com.barliesque.agal {
 		}
 		*/
 		
+		/**
+		 * [seq*]  *Substitute solution for the unsupported comparison opcode.  (Contains 3 instructions)
+		 * destination = (source1 == source2) ? 1 : 0, componentwise
+		 * @param	temp	A temporary register which will be utilized for this comparison
+		 */
+		static public function setIf_Equal(dest:IField, source1:IField, source2:IField, temp:IRegister):void {
+			setIf_GreaterEqual(dest, source1, source2);	//  Is source1 >= source2?
+			setIf_GreaterEqual(temp, source2, source1);	//  Is source2 >= source1?
+			min(dest, dest, temp);						//  If both of the above are true, then they must be equal
+		}
+		
+		/**
+		 * [sne*]  *Substitute solution for the unsupported comparison opcode.  (Contains 3 instructions)
+		 * destination = (source1 != source2) ? 1 : 0, componentwise
+		 * @param	temp	A temporary register which will be utilized for this comparison
+		 */
+		static public function setIf_NotEqual(dest:IField, source1:IField, source2:IField, temp:IRegister):void {
+			setIf_LessThan(dest, source1, source2);	//  Is source1 < source2?
+			setIf_LessThan(temp, source2, source1);	//  Is source2 < source1?
+			max(dest, dest, temp);					//  If either of the above are true, then they must not be equal
+		}
+		
+		
 		/// [crs]  Find the cross product of two 3-component vectors, and store the resulting 3-component vector in destination.
 		static protected function crossProduct(dest:IField, source1:IField, source2:IField):void {
 			Assembler.append("crs " + dest["reg"] + ", " + source1["reg"] + ", " + source2["reg"]);
