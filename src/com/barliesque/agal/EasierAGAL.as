@@ -138,6 +138,7 @@ package com.barliesque.agal {
 			Assembler.append("slt " + dest["reg"] + ", " + source1["reg"] + ", " + source2["reg"]);
 		}
 		
+		/*
 		/// [seq]  destination = (source1 == source2) ? 1 : 0, componentwise
 		static protected function setIf_Equal(dest:IField, source1:IField, source2:IField):void {
 			Assembler.append("seq " + dest["reg"] + ", " + source1["reg"] + ", " + source2["reg"]);
@@ -147,6 +148,7 @@ package com.barliesque.agal {
 		static protected function setIf_NotEqual(dest:IField, source1:IField, source2:IField):void {
 			Assembler.append("sne " + dest["reg"] + ", " + source1["reg"] + ", " + source2["reg"]);
 		}
+		*/
 		
 		/// [crs]  Find the cross product of two 3-component vectors, and store the resulting 3-component vector in destination.
 		static protected function crossProduct(dest:IField, source1:IField, source2:IField):void {

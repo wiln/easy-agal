@@ -66,8 +66,8 @@ package com.barliesque.shaders.macro {
 			setIf_Equal(temp, temp, dest); // If dest is 1, temp is 0, and vice versa
 			
 			// Now apply result values to each
-			multiply(dest, trueResult);
-			multiply(temp, falseResult);
+			multiply(dest, dest, trueResult);
+			multiply(temp, temp, falseResult);
 			
 			// ...and combine results
 			add(dest, dest, temp);
@@ -99,10 +99,10 @@ package com.barliesque.shaders.macro {
 		 * @param	dest	A register whose components will set to handy constant values
 		 */
 		static public function setTwoOneZeroHalf(dest:IRegister):void {
-			subtract(dest.z, dest.z, dest.z);
-			setIf_Equal(dest.y, dest.y, dest.y);
-			add(dest.x, dest.y, dest.y);
-			divide(dest.w, dest.y, dest.x);
+			subtract(dest.z, dest.z, dest.z);		// z = zero
+			setIf_Equal(dest.y, dest.y, dest.y);	// y = one
+			add(dest.x, dest.y, dest.y);			// x = two
+			divide(dest.w, dest.y, dest.x);			// w = half
 		}
 		
 		
@@ -113,7 +113,7 @@ package com.barliesque.shaders.macro {
 		 * @param	minValue	The minimum value
 		 * @param	maxValue	The maximum value
 		 */
-		static function clamp(dest:IField, source:IField, minValue:IField, maxValue:IField):void {
+		static public function clamp(dest:IField, source:IField, minValue:IField, maxValue:IField):void {
 			min(dest, source, maxValue);
 			max(dest, dest, minValue);
 		}
