@@ -63,67 +63,73 @@ As if you didn't already know how to call a static function!  Anyway, you'll fin
 Obviously, when writing macros you can specify whatever parameter types you want, not just AGAL registers.  Have a look at the parameter list of the following function, specifically the `comparison` parameter.
 
 {{{
-	static public const EQUAL:String = "equal";
-	static public const NOT_EQUAL:String = "notEqual";
-	static public const LESS_THAN:String = "less";
-	static public const GREATER_THAN:String = "greater";
-	static public const LESS_OR_EQUAL:String = "lessOrEqual";
-	static public const GREATER_OR_EQUAL:String = "greaterOrEqual";
+static public const EQUAL:String = "equal";
+static public const NOT_EQUAL:String = "notEqual";
+static public const LESS_THAN:String = "less";
+static public const GREATER_THAN:String = "greater";
+static public const LESS_OR_EQUAL:String = "lessOrEqual";
+static public const GREATER_OR_EQUAL:String = "greaterOrEqual";
 
-	/**
-	 * Return one of two results, based on a comparison of two values, componentwise
-	 * dest = (operandA compared with operandB) ? trueResult : falseResult
-	 * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
-	 * @param	temp		A temporary register that will be utilized for this operation
-	 */
-	static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField,
-		trueResult:IField, falseResult:IField, temp:IRegister):void {
 
-		// First make the requested comparison
-		switch (comparison) {
-			case LESS_OR_EQUAL:
-				setIf_LessThan(dest, operandA, operandB);
-				setIf_Equal(temp, operandA, operandB);
-				max(dest, dest, temp);  // Combine results (OR)
-				break;
+/**
+ * Return one of two results, based on a comparison of two values, componentwise
+ * dest = (operandA compared with operandB) ? trueResult : falseResult
+ * Contains 6 to 10 instructions.
+ * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
+ * @param	temp		A temporary register that will be utilized for this operation
+ * @param	temp2		A temporary register that will be utilized for this operation
+ */
+static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, trueResult:IField, falseResult:IField, temp:IRegister):void {
 
-			case GREATER_OR_EQUAL:
-				setIf_GreaterEqual(dest, operandA, operandB);
-				break;
+	// First make the requested comparison
+	switch (comparison) {
+		case LESS_OR_EQUAL:
+			setIf_GreaterEqual(dest, operandA, operandB);
+			setIf_GreaterEqual(temp, operandB, operandA);
+			min(dest, dest, temp);  // Combine results (AND)
+			setIf_LessThan(temp, operandA, operandB);
+			max(dest, dest, temp);  // Combine results (OR)
+			break;
 
-			case EQUAL:
-				setIf_Equal(dest, operandA, operandB);
-				break;
+		case GREATER_OR_EQUAL:
+			setIf_GreaterEqual(dest, operandA, operandB);
+			break;
 
-			case NOT_EQUAL:
-				setIf_NotEqual(dest, operandA, operandB);
-				break;
+		case EQUAL:
+			setIf_Equal(dest, operandA, operandB, temp);
+			break;
 
-			case LESS_THAN:
-				setIf_LessThan(dest, operandA, operandB);
-				break;
+		case NOT_EQUAL:
+			setIf_NotEqual(dest, operandA, operandB, temp);
+			break;
 
-			case GREATER_THAN:
-				setIf_GreaterEqual(dest, operandA, operandB);
-				setIf_NotEqual(temp, operandA, operandB);
-				min(dest, dest, temp);  // Combine results (AND)
-				break;
+		case LESS_THAN:
+			setIf_LessThan(dest, operandA, operandB);
+			break;
 
-			default:
-				throw new Error("Unrecognized comparison type: " + comparison);
-		}
+		case GREATER_THAN:
+			setIf_LessThan(dest, operandA, operandB);
+			setIf_LessThan(temp, operandB, operandA);
+			max(dest, dest, temp);  // Combine results (OR) ...If either is true, A and B are not equal
+			setIf_GreaterEqual(temp, operandA, operandB);
+			min(dest, dest, temp);  // Combine results (AND) ...If both are true, A > B
+			break;
 
-		// Set the temporary to the inverse of the comparison
-		subtract(temp, temp, temp); // All zero
-		setIf_Equal(temp, temp, dest); // If dest is 1, temp is 0, and vice versa
-
-		// Now apply result values to each
-		multiply(dest, trueResult);
-		multiply(temp, falseResult);
-
-		// ...and combine results
-		add(dest, dest, temp);
+		default:
+			throw new Error("Unrecognized comparison type: " + comparison);
 	}
+
+	// Set the temporary to the inverse of the comparison
+	Utils.setOne(temp);  // temp = 1
+	subtract(temp, temp, dest);  //  temp = 1 - dest
+
+	// Now apply result values to each
+	multiply(dest, dest, trueResult);
+	multiply(temp, temp, falseResult);
+
+	// ...and combine results
+	add(dest, dest, temp);
+}
 }}}
 
 So, now I can perform a comparison and get a result value in a single line...
