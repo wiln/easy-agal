@@ -79,7 +79,8 @@ static public const GREATER_OR_EQUAL:String = "greaterOrEqual";
  * @param	temp		A temporary register that will be utilized for this operation
  * @param	temp2		A temporary register that will be utilized for this operation
  */
-static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, trueResult:IField, falseResult:IField, temp:IRegister):void {
+static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, 
+		trueResult:IField, falseResult:IField, temp:IRegister):void {
 
 	// First make the requested comparison
 	switch (comparison) {
