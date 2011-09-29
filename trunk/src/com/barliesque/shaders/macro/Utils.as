@@ -22,6 +22,7 @@ package com.barliesque.shaders.macro {
 		/**
 		 * Return one of two results, based on a comparison of two values, componentwise
 		 * dest = (operandA compared with operandB) ? trueResult : falseResult
+		 * Contains 6 to 10 instructions.
 		 * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
 		 * @param	temp		A temporary register that will be utilized for this operation
 		 * @param	temp2		A temporary register that will be utilized for this operation
@@ -67,7 +68,7 @@ package com.barliesque.shaders.macro {
 			}
 			
 			// Set the temporary to the inverse of the comparison
-			setOne(temp);
+			Utils.setOne(temp);  // temp = 1
 			subtract(temp, temp, dest);  //  temp = 1 - dest
 			
 			// Now apply result values to each
@@ -81,6 +82,7 @@ package com.barliesque.shaders.macro {
 		
 		/**
 		 * Sets the specified register or component selection to zero.
+		 * NOTE: Destination register must have been assigned a value before this macro may be called.
 		 * @param	dest	A register or component selection to be set to zero.
 		 */
 		static public function setZero(dest:IField):void {
@@ -91,6 +93,7 @@ package com.barliesque.shaders.macro {
 		
 		/**
 		 * Sets the specified register or component selection to 1.0
+		 * NOTE: Destination register must have been assigned a value before this macro may be called.
 		 * @param	dest	A register or component selection to be set to 1.0
 		 */
 		static public function setOne(dest:IField):void {
@@ -101,6 +104,7 @@ package com.barliesque.shaders.macro {
 		
 		/**
 		 * Set the component values of a register as follows: {x: 2.0, y: 1.0, z: 0.0, w: 0.5}
+		 * NOTE: Destination register must have been assigned a value before this macro may be called.
 		 * @param	dest	A register whose components will set to handy constant values
 		 */
 		static public function setTwoOneZeroHalf(dest:IRegister):void {
