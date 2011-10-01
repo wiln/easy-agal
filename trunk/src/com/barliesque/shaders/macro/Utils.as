@@ -22,56 +22,54 @@ package com.barliesque.shaders.macro {
 		/**
 		 * Return one of two results, based on a comparison of two values, componentwise
 		 * dest = (operandA compared with operandB) ? trueResult : falseResult
-		 * Contains 6 to 10 instructions.
+		 * Contains 5 to 8 instructions.
 		 * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
 		 * @param	temp		A temporary register that will be utilized for this operation
-		 * @param	temp2		A temporary register that will be utilized for this operation
 		 */
 		static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, trueResult:IField, falseResult:IField, temp:IRegister):void {
 			
 			// First make the requested comparison
+			// and set the temporary to the inverse
 			switch (comparison) {
 				case LESS_OR_EQUAL:
-					setIf_GreaterEqual(dest, operandA, operandB);
-					setIf_GreaterEqual(temp, operandB, operandA);
-					min(dest, dest, temp);  // Combine results (AND)
-					setIf_LessThan(temp, operandA, operandB);
-					max(dest, dest, temp);  // Combine results (OR)
+					setIf_GreaterEqual(dest, operandB, operandA);
+					setIf_LessThan(temp, operandB, operandA);
 					break;
 					
 				case GREATER_OR_EQUAL:
 					setIf_GreaterEqual(dest, operandA, operandB);
+					setIf_LessThan(temp, operandA, operandB);
 					break;
 					
 				case EQUAL:
 					setIf_Equal(dest, operandA, operandB, temp);
+					//  temp = 1 - dest
+					setIf_GreaterEqual(temp, operandA, operandA);
+					subtract(temp, temp, dest);
 					break;
 					
 				case NOT_EQUAL:
 					setIf_NotEqual(dest, operandA, operandB, temp);
+					//  temp = 1 - dest
+					setIf_GreaterEqual(temp, operandA, operandA);
+					subtract(temp, temp, dest);
 					break;
 					
 				case LESS_THAN:
 					setIf_LessThan(dest, operandA, operandB);
+					setIf_GreaterEqual(temp, operandA, operandB);
 					break;
 					
 				case GREATER_THAN:
-					setIf_LessThan(dest, operandA, operandB);
-					setIf_LessThan(temp, operandB, operandA);
-					max(dest, dest, temp);  // Combine results (OR) ...If either is true, A and B are not equal
-					setIf_GreaterEqual(temp, operandA, operandB);
-					min(dest, dest, temp);  // Combine results (AND) ...If both are true, A > B
+					setIf_LessThan(dest, operandB, operandA);
+					setIf_GreaterEqual(temp, operandB, operandA);
 					break;
 					
 				default:
 					throw new Error("Unrecognized comparison type: " + comparison);
 			}
 			
-			// Set the temporary to the inverse of the comparison
-			Utils.setOne(temp);  // temp = 1
-			subtract(temp, temp, dest);  //  temp = 1 - dest
-			
-			// Now apply result values to each
+			// Now apply result values to each...
 			multiply(dest, dest, trueResult);
 			multiply(temp, temp, falseResult);
 			
