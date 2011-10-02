@@ -16,8 +16,13 @@ package com.barliesque.agal {
 	 */
 	public class EasyAGAL extends EasyBase {
 		
-		public function EasyAGAL(debug:Boolean = false) {
-			this.debug = debug;
+		/**
+		 * @param	debug				Set to true to enable comments to be added to opcode, and opcode trace upon rejection of program upload.
+		 * @param	assemblyDebug		Set to true for opcode output from AGALMiniAssembler
+		 * @param	verboseAssembly		Set to true for verbose output from AGALMiniAssembler
+		 */
+		public function EasyAGAL(debug:Boolean = true, assemblyDebug:Boolean = false, verboseAssembly:Boolean = false) {
+			super(debug, assemblyDebug, verboseAssembly);
 		}
 		
 		

@@ -42,10 +42,10 @@ package com.barliesque.agal {
 			public function get b():Component { return new Component(name, reg, "b"); }
 			public function get a():Component { return new Component(name, reg, "a"); }
 			
-			public function get xyz():Component { return new Component(name, reg, "xyz"); }
-			public function get rgb():Component { return new Component(name, reg, "rgb"); }
+			public function get xyz():ComponentSelection { return new ComponentSelection(name, reg, "xyz"); }
+			public function get rgb():ComponentSelection { return new ComponentSelection(name, reg, "rgb"); }
 			
-			public function _(components:String):Component { return new Component(name, reg, components); }
+			public function _(components:String):ComponentSelection { return new ComponentSelection(name, reg, components); }
 	}
 	
 

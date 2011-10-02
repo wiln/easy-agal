@@ -1,5 +1,6 @@
 package com.barliesque.shaders.macro {
 	import com.barliesque.agal.EasierAGAL;
+	import com.barliesque.agal.IComponent;
 	import com.barliesque.agal.IField;
 	import com.barliesque.agal.IRegister;
 	
@@ -75,6 +76,43 @@ package com.barliesque.shaders.macro {
 			
 			// ...and combine results
 			add(dest, dest, temp);
+		}
+		
+		
+		/**
+		 * Select one of a number of options by index.
+		 * @param	dest		The selected value
+		 * @param	index		A component with a value of 0 to n, where n is the number of options - 1.  An index outside that range will return zero.  Any fractional part will be ignored.
+		 * @param	temp		A temporary register to be used for this caluclation
+		 * @param	temp2		A temporary register to be used for this caluclation
+		 * @param	...options	A series of IField options which will be selected from.
+		 */
+		static public function selectByIndex(dest:IField, index:IComponent, temp:IRegister, temp2:IRegister, ...options):void {
+			
+			var currentIndex:IComponent = temp.x;
+			subtract(currentIndex, index, index);
+			
+			var selected:IComponent = temp.y;
+			fractional(selected, index);
+			subtract(selected, index, selected);
+			
+			var one:IComponent = temp.z;
+			setIf_GreaterEqual(one, index, index);
+			
+			var compare:IComponent = temp.w;
+			
+			// Set dest to zero
+			subtract(dest, options[0], options[0]);
+			
+			for (var i:int = 0; i < options.length; i++ ) {
+				setIf_Equal(compare, currentIndex, selected, temp2);
+				multiply(temp2, options[i], compare);
+				add(dest, dest, temp2);
+				
+				if (i < options.length - 1) {
+					add(currentIndex, currentIndex, one);
+				}
+			}
 		}
 		
 		

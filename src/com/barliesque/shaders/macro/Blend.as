@@ -1,5 +1,6 @@
 package com.barliesque.shaders.macro {
 	import com.barliesque.agal.EasierAGAL;
+	import com.barliesque.agal.IComponent;
 	import com.barliesque.agal.IField;
 	import com.barliesque.agal.IRegister;
 	
@@ -137,13 +138,12 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
+		 * @param	half				A component containing the value:  0.5
 		 * @param	temp				A register temporarily utilized for this calculation
 		 * @param	temp2				A register temporarily utilized for this calculation
 		 */
-		static public function overlay(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			var half:IField = oneHalf._("www");
+		static public function overlay(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
 			
 			// High:  temp = 1 - ((1 - blend) * (1 - base) * 2)
 			EasierAGAL.subtract(temp.rgb, one, blendColor.rgb);
@@ -169,15 +169,15 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
+		 * @param	half				A component containing the value:  0.5
 		 * @param	temp				A register temporarily utilized for this calculation
 		 * @param	temp2				A register temporarily utilized for this calculation
 		 */
-		static public function softLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			var half:IField = oneHalf._("www");
+		static public function softLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
+			
 			var burn:IField = temp.rgb;
-			var dodge:IField = temp2.rgb;
+			var dodge:IField = dest.rgb;
 			
 			// Burn:  temp = (Blend + ½) × Base
 			add(burn, blendColor.rgb, half);
@@ -202,13 +202,14 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
+		 * @param	half				A component containing the value:  0.5
 		 * @param	temp				A register temporarily utilized for this calculation
 		 * @param	temp2				A register temporarily utilized for this calculation
 		 */
-		static public function hardLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
+		static public function hardLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
 			// Call overlay, swapping the base and blend colors
-			overlay(dest, baseColor, blendColor, oneHalf, temp, temp2, temp3);
+			overlay(dest, baseColor, blendColor, one, half, temp, temp2, temp3);
 		}
 		
 		
@@ -223,12 +224,11 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
+		 * @param	half				A component containing the value:  0.5
 		 * @param	temp				A register temporarily utilized for this calculation
 		 */
-		static public function vividLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			var half:IField = oneHalf._("www");
+		static public function vividLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
 			var burn:IField = temp.rgb;
 			var dodge:IField = temp2.rgb;
 			
@@ -257,11 +257,9 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
 		 */
-		static public function linearLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			
+		static public function linearLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent):void {
 			EasierAGAL.subtract(dest, baseColor, one);
 			EasierAGAL.add(dest, dest, blendColor);
 			EasierAGAL.add(dest, dest, blendColor);
@@ -276,14 +274,13 @@ package com.barliesque.shaders.macro {
 		* @param	dest				Register to store resulting RGB color.
 		* @param	blendColor			The RGB color of the pixel on top.
 		* @param	baseColor			The RGB color of the pixel underneath.
-		* @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		* @param	one					A component containing the value:  1.0
+		* @param	half				A component containing the value:  0.5
 		* @param	temp				A register temporarily utilized for this calculation
 		* @param	temp2				A register temporarily utilized for this calculation
 		* @param	temp3				A register temporarily utilized for this calculation
 		 */
-		static public function pinLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			var half:IField = oneHalf._("www");
+		static public function pinLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
 			
 			var darken:IField = temp.rgb;
 			var lighten:IField = temp2.rgb;
@@ -306,11 +303,9 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
 		 */
-		static public function hardMix(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			
+		static public function hardMix(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent):void {
 			// Yes, hard mix can be simplified down to just two instructions!
 			EasierAGAL.subtract(dest.rgb, one, blendColor);
 			setIf_LessThan(dest.rgb, dest.rgb, baseColor.rgb);
@@ -354,11 +349,8 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
 		 */
-		static public function subtract(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			
+		static public function subtract(dest:IRegister, baseColor:IRegister, blendColor:IRegister):void {
 			EasierAGAL.subtract(dest.rgb, baseColor.rgb, blendColor.rgb);
 		}
 		
@@ -381,11 +373,9 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	half				A component containing the value:  0.5
 		 */
-		static public function average(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var half:IField = oneHalf._("www");
-			
+		static public function average(dest:IRegister, baseColor:IRegister, blendColor:IRegister, half:IComponent):void {
 			add(dest, blendColor, baseColor);
 			EasierAGAL.multiply(dest.rgb, dest.rgb, half);
 		}
@@ -397,12 +387,10 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
 		 * @param	temp				A register temporarily utilized for this calculation
 		 */
-		static public function reflect(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			
+		static public function reflect(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, temp:IRegister):void {
 			EasierAGAL.multiply(dest, baseColor, baseColor);
 			EasierAGAL.subtract(temp, one, blendColor);
 			EasierAGAL.divide(dest, dest, temp);
@@ -414,11 +402,11 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
 		 * @param	temp				A register temporarily utilized for this calculation
 		 */
-		static public function glow(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister, temp:IRegister):void {
-			reflect(dest, baseColor, blendColor, oneHalf, temp);
+		static public function glow(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, temp:IRegister):void {
+			reflect(dest, baseColor, blendColor, one, temp);
 		}
 		
 		/**
@@ -428,11 +416,9 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	one					A component containing the value:  1.0
 		 */
-		static public function negation(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var one:IField = oneHalf._("yyy");
-			
+		static public function negation(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent):void {
 			EasierAGAL.subtract(dest, one, baseColor);
 			EasierAGAL.subtract(dest, dest, blendColor);
 			EasierAGAL.abs(dest, dest);
@@ -463,11 +449,9 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	half				A component containing the value:  0.5
 		 */
-		static public function grainExtract(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var half:IField = oneHalf._("www");
-			
+		static public function grainExtract(dest:IRegister, baseColor:IRegister, blendColor:IRegister, half:IComponent):void {
 			EasierAGAL.subtract(dest, baseColor, blendColor);
 			EasierAGAL.add(dest, dest, half);
 		}
@@ -477,11 +461,9 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	oneHalf				A register containing the constant values:  y=1.0, w=0.5
+		 * @param	half				A component containing the value:  0.5
 		 */
-		static public function grainMerge(dest:IRegister, baseColor:IRegister, blendColor:IRegister, oneHalf:IRegister):void {
-			var half:IField = oneHalf._("www");
-			
+		static public function grainMerge(dest:IRegister, baseColor:IRegister, blendColor:IRegister, half:IComponent):void {
 			EasierAGAL.add(dest, baseColor, blendColor);
 			EasierAGAL.subtract(dest, dest, half);
 		}
