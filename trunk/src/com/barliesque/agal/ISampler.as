@@ -10,7 +10,7 @@ package com.barliesque.agal {
 		function get b():Component;
 		function get a():Component;
 		
-		function get rgb():Component;
+		function get rgb():ComponentSelection;
 	}
 	
 }

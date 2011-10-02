@@ -12,6 +12,9 @@ package com.barliesque.agal {
 		static private var _debug:AGALMiniAssembler;
 		static private var _release:AGALMiniAssembler;
 		
+		/// True while EasyAGAL code is being prepared as AGAL opcode.  Set by EasyBase.
+		static internal var isPreparing:Boolean = false;
+		
 		/// Static variable for AGAL instructions to be appended by EasyAGAL classes
 		static internal var code:String;
 		
@@ -22,27 +25,27 @@ package com.barliesque.agal {
 		static public var assemblingVertex:Boolean;
 		
 		/// Internal flag set while preparing opcode.  True for debug mode, False for release.
-		static public var assemblingDebug:Boolean;
+		static public var assemblyDebug:Boolean;
 		
-		/// Prepare to assemble a new shader program
-		static internal function prep(assemblingVertex:Boolean, assemblingDebug:Boolean):void {
+		/// Begin preparation of AGAL opcode for assembly
+		static internal function prep(assemblingVertex:Boolean, assemblyDebug:Boolean):void {
 			code = "";
 			instructionCount = 0;
 			Assembler.assemblingVertex = assemblingVertex;
-			Assembler.assemblingDebug = assemblingDebug;
+			Assembler.assemblyDebug = assemblyDebug;
 		}
 		
-		/// Append a line of opcode to the shader currently being built, and count lines
+		/// Append a line of opcode to the shader currently being prepared, and count lines
 		static internal function append(code:String, count:Boolean = true):void {
 			Assembler.code += code + "\n";
 			if (count) instructionCount++;
 		}
 		
 		/// Compile opcode string to a ByteArray ready to be uploaded with Program3D.
-		/// NOTE: Assembler.assemblingVertex should already have been appropriately set.
+		/// NOTE: Assembler.assemblingVertex should already have been appropriately set by EasyBase.
 		static public function assemble(opcode:String, verbose:Boolean = false):ByteArray {
 			var type:String = (assemblingVertex ? Context3DProgramType.VERTEX : Context3DProgramType.FRAGMENT);
-			if (assemblingDebug) {
+			if (assemblyDebug) {
 				return Assembler.debug.assemble(type, opcode, verbose);
 			}
 			return release.assemble(type, opcode, verbose);
@@ -59,6 +62,7 @@ package com.barliesque.agal {
 			if (_release == null) _release = new AGALMiniAssembler(false);
 			return _release;
 		}
+		
 		
 	}
 }

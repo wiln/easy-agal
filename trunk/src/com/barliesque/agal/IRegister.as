@@ -5,6 +5,7 @@ package com.barliesque.agal {
 	 * @author David Barlia
 	 */
 	public interface IRegister extends IField {
+		
 		function get x():Component;
 		function get y():Component;
 		function get z():Component;
@@ -15,11 +16,11 @@ package com.barliesque.agal {
 		function get b():Component;
 		function get a():Component;
 		
-		function get xyz():Component;
-		function get rgb():Component;
+		function get xyz():ComponentSelection;
+		function get rgb():ComponentSelection;
 		
-		/// Specify any register components, e.g. "zyx" "xxxx" "wwww" "rrb" "rg"
-		function _(xyzwrgba:String):Component;
+		/// Specify any register components, e.g. "zyx" "wwww" "rrb" "rg"
+		function _(xyzwrgba:String):ComponentSelection;
+		
 	}
-	
 }
