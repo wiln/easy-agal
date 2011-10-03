@@ -46,9 +46,9 @@ package com.barliesque.agal {
 		static public function assemble(opcode:String, verbose:Boolean = false):ByteArray {
 			var type:String = (assemblingVertex ? Context3DProgramType.VERTEX : Context3DProgramType.FRAGMENT);
 			if (assemblyDebug) {
-				return Assembler.debug.assemble(type, opcode, verbose);
+				return Assembler.debug.assemble(type, opcode);
 			}
-			return release.assemble(type, opcode, verbose);
+			return release.assemble(type, opcode);
 		}
 		
 		/// An AGALMiniAssembler instance with debug features on.
