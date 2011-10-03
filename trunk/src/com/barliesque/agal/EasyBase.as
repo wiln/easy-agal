@@ -26,19 +26,16 @@ package com.barliesque.agal {
 		
 		private var debug:Boolean;
 		private var assemblyDebug:Boolean;
-		private var verboseAssembly:Boolean;
 		
 		//---------------------------------------------------------
 		
 		/**
 		 * @param	debug				Set to true to enable comments to be added to opcode, and opcode trace upon rejection of program upload.
 		 * @param	assemblyDebug		Set to true for opcode output from AGALMiniAssembler
-		 * @param	verboseAssembly		Set to true for verbose output from AGALMiniAssembler
 		 */
-		public function EasyBase(debug:Boolean = true, assemblyDebug:Boolean = false, verboseAssembly:Boolean = false) {
-			this.verboseAssembly = verboseAssembly;
-			this.assemblyDebug = assemblyDebug;
+		public function EasyBase(debug:Boolean = true, assemblyDebug:Boolean = false) {
 			this.debug = debug;
+			this.assemblyDebug = assemblyDebug;
 		}
 		
 		
@@ -213,12 +210,12 @@ package com.barliesque.agal {
 		
 		private function assembleVertex():ByteArray {
 			prepVertexShader();
-			return Assembler.assemble(_vertexOpcode, verboseAssembly);
+			return Assembler.assemble(_vertexOpcode);
 		}
 		
 		private function assembleFragment():ByteArray {
 			prepFragmentShader();
-			return Assembler.assemble(_fragmentOpcode, verboseAssembly);
+			return Assembler.assemble(_fragmentOpcode);
 		}
 		
 		/// Release all resources, including the shader program uploaded to the GPU.
