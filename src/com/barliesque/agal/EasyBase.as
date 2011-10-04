@@ -285,10 +285,9 @@ package com.barliesque.agal {
 			return new Register("CONST", "vc[" + (index as Component).reg + "]", null);  // "fc[" + (index as Component).reg + "]"
 		}
 		
-		
 		/**
 		 * { vc0-127 / fc0-27 }  CONSTANT REGISTERS
-		 * These hold values passed as parameters from ActionScript, using Context3D::setProgramConstants().
+		 * These hold read-only values, passed as parameters from ActionScript using Context3D::setProgramConstants().
 		 * There are 128 constants available to vertex shaders, but only 28 to fragment shaders.
 		 */
 		protected function get CONST():Vector.<IRegister> { return _CONST; }
@@ -298,7 +297,7 @@ package com.barliesque.agal {
 		 * These registers can be used to temporarily store the results of calculations.
 		 * There are 8 temporary registers available to vertex shaders, and another 8 to pixel shaders.
 		 */
-		 protected function get TEMP():Vector.<IRegister> { return _TEMP; }
+		protected function get TEMP():Vector.<IRegister> { return _TEMP; }
 		
 		/**
 		 * { va0-7 }  VERTEX ATTRIBUTE BUFFER REGISTERS
@@ -308,7 +307,7 @@ package com.barliesque.agal {
 		 * Attributes of a vertex will probably include position, as well as UV texture values, 
 		 * vertex color, vertex normal, or any other information that your shader can make use of.
 		 */
-		 protected function get ATTRIBUTE():Vector.<IRegister> { return _ATTRIBUTE; }
+		protected function get ATTRIBUTE():Vector.<IRegister> { return _ATTRIBUTE; }
 		
 		/**
 		 * { op / oc }  OUTPUT REGISTER - Position or Color
@@ -317,9 +316,9 @@ package com.barliesque.agal {
 		 * For fragment shaders it is the color of the pixel.
 		 * There is only one Output register for the vertex shader and one for the fragment shader.
 		 */
-		 protected function get OUTPUT():IRegister { return _OUTPUT; }
-		 // For more about the clip-space coordinate system, see:  
-		 // http://http.developer.nvidia.com/CgTutorial/cg_tutorial_chapter04.html
+		protected function get OUTPUT():IRegister { return _OUTPUT; }
+		// For more about the clip-space coordinate system, see:  
+		// http://http.developer.nvidia.com/CgTutorial/cg_tutorial_chapter04.html
 		
 		/**
 		 * { v0-7 }  VARYING REGISTERS
@@ -329,7 +328,7 @@ package com.barliesque.agal {
 		 * of which the fragment is a part.
 		 * There are 8 Varying registers, shared by both vector and fragment shaders.
 		 */
-		 protected function get VARYING():Vector.<IRegister> { return _VARYING; }
+		protected function get VARYING():Vector.<IRegister> { return _VARYING; }
 		
 		/**
 		 * { fs0-7 }  FRAGMENT (TEXTURE) SAMPLER REGISTERS
@@ -338,8 +337,8 @@ package com.barliesque.agal {
 		 * the function Context3D::setTextureAt(index:uint, texture:BitmapData) where
 		 * the index corresponds to the Fragment Sampler register number.
 		 */
-		 protected function get SAMPLER():Vector.<Sampler> { return _SAMPLER; }
-		 
+		protected function get SAMPLER():Vector.<Sampler> { return _SAMPLER; }
+		
 		//} -----------------------------------------------------------------		
 		
 	}

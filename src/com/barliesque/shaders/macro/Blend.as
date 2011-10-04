@@ -177,21 +177,32 @@ package com.barliesque.shaders.macro {
 		static public function softLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
 			
 			var burn:IField = temp.rgb;
-			var dodge:IField = dest.rgb;
+			var dodge:IField = temp2.rgb;
 			
 			// Burn:  temp = (Blend + ½) × Base
 			add(burn, blendColor.rgb, half);
 			EasierAGAL.multiply(burn, burn, baseColor.rgb);
 			
 			// Dodge:  dest = ((1½ - blendColor) * (baseColor - 1) + 1)
-			add(temp3, one, half);
-			EasierAGAL.subtract(temp3, temp3, blendColor)
+			move(temp3, one);
+			add(temp3, half, temp3);
+			EasierAGAL.subtract(temp3, temp3, blendColor);
 			EasierAGAL.subtract(dodge, baseColor, one);
 			EasierAGAL.multiply(dodge, dodge, temp3);
 			add(dodge, dodge, one);
 			
 			// Burn or Dodge?
-			Utils.setByComparison(dest.rgb, blendColor.rgb, Utils.GREATER_THAN, half, burn, dodge, temp3);
+			Utils.setByComparison(dest.rgb, blendColor.rgb, Utils.GREATER_OR_EQUAL, half, burn, dodge, temp3);
+			
+			setIf_GreaterEqual(dest.rgb, blendColor.rgb, half);
+			setIf_LessThan(temp3.rgb, blendColor.rgb, half);
+			
+			// Now apply result values to each...
+			EasierAGAL.multiply(dest.rgb, dest.rgb, burn);
+			EasierAGAL.multiply(temp3.rgb, temp3.rgb, dodge);
+			
+			// ...and combine results
+			EasierAGAL.add(dest.rgb, dest.rgb, temp3.rgb);
 		}
 		
 		
@@ -209,7 +220,7 @@ package com.barliesque.shaders.macro {
 		 */
 		static public function hardLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
 			// Call overlay, swapping the base and blend colors
-			overlay(dest, baseColor, blendColor, one, half, temp, temp2, temp3);
+			overlay(dest, blendColor, baseColor, one, half, temp, temp2, temp3);
 		}
 		
 		
