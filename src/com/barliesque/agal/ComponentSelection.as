@@ -6,17 +6,23 @@ package com.barliesque.agal {
 	 */
 	internal class ComponentSelection implements IField {
 		
-			protected var _name:String;
-			private var _register:String;
+		private var _register:String;
+		
+		public function ComponentSelection(register:Register, prop:String) {
+			_register = register.reg + ((prop.length > 0) ? ("." + prop) : "");
 			
-			public function ComponentSelection(name:String, register:String, prop:String) {
-				_name = name;
-				this._register = register + ((register.indexOf(".") < 0) ? "." : "") + prop;
-			}
-			
-			internal function get reg():String { 
-				return _register;
-			}
+			// Validate components
+			//if (Assembler.assemblingDebug) {
+				if (prop.length > 4) throw new Error("s16 Illegal component selection: " + _register);  // This is possible:  CONST[0]._("rgbar")
+				for (var i:int = 0; i < prop.length; i++ ) {
+					if (!Component.valid(prop.substr(i,1))) throw new Error("s18 Illegal component selection: " + _register);  // This is possible:  CONST[0]._("foo")
+				}
+			//}
+		}
+		
+		internal function get reg():String { 
+			return _register;
+		}
 		
 	}
 }

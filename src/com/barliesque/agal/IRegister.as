@@ -19,8 +19,8 @@ package com.barliesque.agal {
 		function get xyz():ComponentSelection;
 		function get rgb():ComponentSelection;
 		
-		/// Specify any register components, e.g. "zyx" "wwww" "rrb" "rg"
-		function _(xyzwrgba:String):ComponentSelection;
+		/// Specify any register component or components by string, e.g. "zyx" "wwww" "rrb" "rg"
+		function _(xyzwrgba:String):IField;
 		
 	}
 }

@@ -1,16 +1,9 @@
 package com.barliesque.agal {
 	
 	/**
-	 * Marks a register class as being a SAMPLER register
+	 * Marks a register class as being a SAMPLER register - which does not support component selection
 	 * @author David Barlia
 	 */
-	public interface ISampler extends IField {
-		function get r():Component;
-		function get g():Component;
-		function get b():Component;
-		function get a():Component;
-		
-		function get rgb():ComponentSelection;
-	}
+	public interface ISampler { }
 	
 }
