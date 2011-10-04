@@ -9,7 +9,7 @@ Wherever you use a function from the Easy/EasierAGAL library, instructions are a
 
 == Interface types ==
 
-When you define function parameters, or alias variables, you have three options for the data type:
+When you define function parameters, or alias variables, you have four options for the data type:
 
   * *`IRegister`* - Just as it sounds, this type specifies an AGAL register.  The whole register, that is, so `CONST[0]` is an `IRegister`, but `CONST[0].xyz` is not.  If the user of your class tries to pass `VARYING[1].x` where an `IRegister` was specified, they'll get a compile error.
 
@@ -79,7 +79,8 @@ static public const GREATER_OR_EQUAL:String = "greaterOrEqual";
  * @param	comparison	The type of comparison, e.g. Utils.NOT_EQUAL
  * @param	temp		A temporary register that will be utilized for this operation
  */
-static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, trueResult:IField, falseResult:IField, temp:IRegister):void {
+static public function setByComparison(dest:IField, operandA:IField, comparison:String, operandB:IField, 
+					trueResult:IField, falseResult:IField, temp:IRegister):void {
 
 	// First make the requested comparison
 	// and set the temporary to the inverse
