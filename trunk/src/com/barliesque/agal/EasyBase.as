@@ -89,7 +89,7 @@ package com.barliesque.agal {
 		 * @param	lineNumbering	If true, line numbers are added to the left side to assist in locating tokens referred to by an AGAL error message
 		 * @return	Returns fragment shader code to be passed to AGALMiniAssembler
 		 */
-		public function getFragmentOpcode(lineNumbering:Boolean = false):String { 
+		public function getFragmentOpcode(lineNumbering:Boolean = false):String {
 			prepFragmentShader();
 			if (Assembler.isPreparing && !Assembler.assemblingVertex) {
 				return (lineNumbering ? addLineNumbers(Assembler.code) : Assembler.code);
@@ -131,11 +131,43 @@ package com.barliesque.agal {
 		
 		//---------------------------------------------------------
 		
-		/// Use this function to manually assign or clear the vertex opcode
-		protected function setVertexOpcode(value:String):void { _vertexOpcode = value; }
+		/// Use this function to manually assign, clear or append to the vertex opcode
+		protected function setVertexOpcode(opcode:String, append:Boolean = false):void {
+			if (Assembler.isPreparing && Assembler.assemblingVertex) {
+				if (append) {
+					if (Assembler.code == null) Assembler.code = "";
+					Assembler.code += opcode;
+				} else {
+					Assembler.code = opcode;
+				}
+			} else {
+				if (append) {
+					if (_vertexOpcode == null) _vertexOpcode = "";
+					_vertexOpcode += opcode;
+				} else {
+					_vertexOpcode = opcode;
+				}
+			}
+		}
 		
-		/// Use this function to manually assign or clear the fragment opcode
-		protected function setFragmentOpcode(code:String):void { _fragmentOpcode = code; }
+		/// Use this function to manually assign, clear or append to the fragment opcode
+		protected function setFragmentOpcode(opcode:String, append:Boolean = false):void {
+			if (Assembler.isPreparing && !Assembler.assemblingVertex) {
+				if (append) {
+					if (Assembler.code == null) Assembler.code = "";
+					Assembler.code += opcode;
+				} else {
+					Assembler.code = opcode;
+				}
+			} else {
+				if (append) {
+					if (_fragmentOpcode == null) _fragmentOpcode = "";
+					_fragmentOpcode += opcode;
+				} else {
+					_fragmentOpcode = opcode;
+				}
+			}
+		}
 		
 		/// Use this function to manually assign or clear the shader program
 		protected function setProgram(value:Program3D):void { _program = value; }

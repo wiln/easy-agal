@@ -6,46 +6,44 @@ package com.barliesque.agal {
 	 */
 	internal class Register implements IRegister {
 			
-			protected var vertexReg:String;
-			protected var fragmentReg:String;
-			protected var _name:String;
+			private var _vertexReg:String;
+			private var _fragmentReg:String;
+			private var _name:String;
 			
 			public function Register(name:String, vertexReg:String, fragmentReg:String) {
 				_name = name;
-				this.vertexReg = vertexReg;
-				this.fragmentReg = fragmentReg;
+				_vertexReg = vertexReg;
+				_fragmentReg = fragmentReg;
 			}
 			
-			//override flash_proxy function getProperty(name:*):* {
-				//return new Component(this.name, reg, name);
-			//}
-			
 			internal function get reg():String { 
-				var code:String = Assembler.assemblingVertex ? vertexReg : fragmentReg;
+				var code:String = Assembler.assemblingVertex ? _vertexReg : _fragmentReg;
 				if (code == null) {
-					throw new Error("Register " + name + " not available in " + (Assembler.assemblingVertex ? "Vertex Shaders" : "Fragment Shaders"));
+					throw new Error("Register " + _name + " not available in " + (Assembler.assemblingVertex ? "Vertex Shaders" : "Fragment Shaders"));
 				}
 				return code;
 			}
 			
-			internal function get name():String {
-				return _name;
+			public function get x():Component { return new Component(this, "x"); }
+			public function get y():Component { return new Component(this, "y"); }
+			public function get z():Component { return new Component(this, "z"); }
+			public function get w():Component { return new Component(this, "w"); }
+			
+			public function get r():Component { return new Component(this, "r"); }
+			public function get g():Component { return new Component(this, "g"); }
+			public function get b():Component { return new Component(this, "b"); }
+			public function get a():Component { return new Component(this, "a"); }
+			
+			public function get xyz():ComponentSelection { return new ComponentSelection(this, "xyz"); }
+			public function get rgb():ComponentSelection { return new ComponentSelection(this, "rgb"); }
+			
+			public function _(components:String):IField { 
+				if (components.length == 1) {
+					return new Component(this, components);
+				} else {
+					return new ComponentSelection(this, components);
+				}
 			}
-			
-			public function get x():Component { return new Component(name, reg, "x"); }
-			public function get y():Component { return new Component(name, reg, "y"); }
-			public function get z():Component { return new Component(name, reg, "z"); }
-			public function get w():Component { return new Component(name, reg, "w"); }
-			
-			public function get r():Component { return new Component(name, reg, "r"); }
-			public function get g():Component { return new Component(name, reg, "g"); }
-			public function get b():Component { return new Component(name, reg, "b"); }
-			public function get a():Component { return new Component(name, reg, "a"); }
-			
-			public function get xyz():ComponentSelection { return new ComponentSelection(name, reg, "xyz"); }
-			public function get rgb():ComponentSelection { return new ComponentSelection(name, reg, "rgb"); }
-			
-			public function _(components:String):ComponentSelection { return new ComponentSelection(name, reg, components); }
 	}
 	
 

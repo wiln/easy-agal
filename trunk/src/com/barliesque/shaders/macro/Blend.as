@@ -161,6 +161,8 @@ package com.barliesque.shaders.macro {
 		}
 		
 		
+		// dest = ( Base - 2*Base*Blend + 2*Blend ) * Base
+		
 		/**
 		 * Soft-Light blending both darkens and lightens, depending on the blend color. 
 		 * If the blend color is lighter than 50%, the result is lightened as if it were dodged. 
@@ -169,40 +171,14 @@ package com.barliesque.shaders.macro {
 		 * @param	dest				Register to store resulting RGB color.
 		 * @param	blendColor			The RGB color of the pixel on top.
 		 * @param	baseColor			The RGB color of the pixel underneath.
-		 * @param	one					A component containing the value:  1.0
-		 * @param	half				A component containing the value:  0.5
-		 * @param	temp				A register temporarily utilized for this calculation
-		 * @param	temp2				A register temporarily utilized for this calculation
 		 */
-		static public function softLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister, one:IComponent, half:IComponent, temp:IRegister, temp2:IRegister, temp3:IRegister):void {
-			
-			var burn:IField = temp.rgb;
-			var dodge:IField = temp2.rgb;
-			
-			// Burn:  temp = (Blend + ½) × Base
-			add(burn, blendColor.rgb, half);
-			EasierAGAL.multiply(burn, burn, baseColor.rgb);
-			
-			// Dodge:  dest = ((1½ - blendColor) * (baseColor - 1) + 1)
-			move(temp3, one);
-			add(temp3, half, temp3);
-			EasierAGAL.subtract(temp3, temp3, blendColor);
-			EasierAGAL.subtract(dodge, baseColor, one);
-			EasierAGAL.multiply(dodge, dodge, temp3);
-			add(dodge, dodge, one);
-			
-			// Burn or Dodge?
-			Utils.setByComparison(dest.rgb, blendColor.rgb, Utils.GREATER_OR_EQUAL, half, burn, dodge, temp3);
-			
-			setIf_GreaterEqual(dest.rgb, blendColor.rgb, half);
-			setIf_LessThan(temp3.rgb, blendColor.rgb, half);
-			
-			// Now apply result values to each...
-			EasierAGAL.multiply(dest.rgb, dest.rgb, burn);
-			EasierAGAL.multiply(temp3.rgb, temp3.rgb, dodge);
-			
-			// ...and combine results
-			EasierAGAL.add(dest.rgb, dest.rgb, temp3.rgb);
+		static public function softLight(dest:IRegister, baseColor:IRegister, blendColor:IRegister):void {
+			EasierAGAL.add(dest.rgb, baseColor.rgb, baseColor.rgb);
+			EasierAGAL.multiply(dest.rgb, dest.rgb, blendColor.rgb);
+			EasierAGAL.subtract(dest.rgb, baseColor.rgb, dest.rgb);
+			EasierAGAL.add(dest.rgb, dest.rgb, blendColor.rgb);
+			EasierAGAL.add(dest.rgb, dest.rgb, blendColor.rgb);
+			EasierAGAL.multiply(dest.rgb, dest.rgb, baseColor.rgb);
 		}
 		
 		

@@ -5,10 +5,18 @@ package com.barliesque.agal {
 	 * 
 	 * @author David Barlia
 	 */
-	internal class Sampler extends Register implements ISampler {
-			 public function Sampler(reg:String) {
-				 super("SAMPLER", null, reg);
-			 }
+	internal class Sampler implements ISampler {
+		
+		private var _register:String;
+		
+		public function Sampler(register:String) {
+			this._register = register;
+		}
+		
+		internal function get reg():String { 
+			if (Assembler.assemblingVertex) throw new Error("SAMPLER registers not available in Vertex Shaders");
+			return _register;
+		}
+		
 	}
-	
 }
