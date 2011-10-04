@@ -17,7 +17,7 @@ When you define function parameters, or alias variables, you have four options f
 
   * *`IField`* - This type specifies any AGAL register (except for texture samplers) -- either the whole register, or a selection of components.
 
-  * *`ISampler`* - This type specifies a texture `SAMPLER` registers.  Trying to pass `ATTRIBUTE[3]` to an `ISampler` parameter again results in a compile-time error.
+  * *`ISampler`* - This type specifies a texture `SAMPLER` register.  Trying to pass `ATTRIBUTE[3]` to an `ISampler` parameter again results in a compile-time error.  No component selections of sampler registers are supported by AGAL.
 
 So, for example, we can use ActionScript variables as aliases to AGAL registers, like so:
 
