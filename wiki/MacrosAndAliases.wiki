@@ -11,7 +11,7 @@ Wherever you use a function from the Easy/EasierAGAL library, instructions are a
 
 There is one important rule in writing macros with EasyAGAL:  you may not use any register that is not passed to your macro as a parameter.  This is a good rule to abide by because it means that the user of the macro retains control over how registers are used;  it helps to keep your macros as reusable as possible.  When you define function parameters, or alias variables, you have four data type options:
 
-  * *`IRegister`* - Just as it sounds, this type specifies an AGAL register.  The whole register, that is, so `CONST[0]` is an `IRegister`, but `CONST[0].xyz` is not.  If the user of your class tries to pass `VARYING[1].x` where an `IRegister` was specified, they'll get a compile error.
+  * *`IRegister`* - Just as it sounds, this type specifies an AGAL register.  The whole register, that is, so `CONST[0]` is an `IRegister`, but `CONST[0].xyz` is not.  If the user of your macro tries to pass `VARYING[1].x` where an `IRegister` was specified, they'll get a compile error.
 
   * *`IComponent`* - Strictly a single component of a register.  `CONST[0].x` is an `IComponent`, but `CONST[0].xyz` and `CONST[0]` are not.
 
