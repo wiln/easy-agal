@@ -10,7 +10,7 @@ package com.barliesque.agal {
 		private var _register:String;
 		
 		public function Component(register:Register, prop:String) {
-			_register = register.reg + "." + prop;
+			_register = register.reg + "." + ComponentSelection.xyzwOnly(prop);
 			
 			if (!valid(prop)) throw new Error("c15 Illegal component selection: " + _register);  // This is possible:  CONST[0]._("q")
 		}

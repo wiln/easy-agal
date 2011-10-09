@@ -248,7 +248,7 @@ package com.barliesque.agal {
 		 * @param	source2		A Texture Sampler register that is linked to the texture to be sampled
 		 * @param	flags		Refer to the TextureFlag class
 		 */
-		static protected function tex(dest:IField, source1:IField, source2:Sampler, flags:Array = null):void {
+		static protected function tex(dest:IField, source1:IField, source2:ISampler, flags:Array = null):void {
 			if (Assembler.assemblingVertex) throw new Error("sampleTexture() is only available in vertex shaders.");
 			var code:String = "tex " + dest["reg"] + ", " + source1["reg"] + ", " + source2["reg"];
 			if (flags) {

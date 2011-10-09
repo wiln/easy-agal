@@ -7,16 +7,18 @@ package com.barliesque.agal {
 	 */
 	internal class Sampler implements ISampler {
 		
-		private var _register:String;
+		private var _index:int;
 		
-		public function Sampler(register:String) {
-			this._register = register;
+		public function Sampler(index:int) {
+			_index = index;
 		}
 		
 		internal function get reg():String { 
 			if (Assembler.assemblingVertex) throw new Error("SAMPLER registers not available in Vertex Shaders");
-			return _register;
+			return "fs" + _index;
 		}
+		
+		internal function get index():int { return _index; }
 		
 	}
 }

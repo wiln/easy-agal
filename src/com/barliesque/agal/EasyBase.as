@@ -2,11 +2,14 @@ package com.barliesque.agal {
 	import flash.display3D.Context3D;
 	import flash.display3D.Program3D;
 	import flash.utils.ByteArray;
+	
 	/**
-	 * ...
+	 * Internal base class providing common functionality of EasyAGAL and EasierAGAL
 	 * @author David Barlia
 	 */
 	internal class EasyBase {
+		
+		/// @private
 		
 		private var _vertexOpcode:String;
 		private var _fragmentOpcode:String;
@@ -21,7 +24,7 @@ package com.barliesque.agal {
 		internal var _TEMP:Vector.<IRegister>;
 		internal var _OUTPUT:Register;
 		internal var _VARYING:Vector.<IRegister>;
-		internal var _SAMPLER:Vector.<Sampler>;
+		internal var _SAMPLER:Vector.<ISampler>;
 		internal var initialized:Boolean = false;
 		
 		private var debug:Boolean;
@@ -50,6 +53,7 @@ package com.barliesque.agal {
 		//---------------------------------------------------------
 		
 		/// A count of the number of instructions in the vertex shader.
+		/// AGAL shaders are restricted to a max of 256 instructions.
 		/// If _vertexShader() has not already been called, it will be called upon access of this property.
 		/// It is safe to access this property from _vertexShader() without causing an infinte loop.
 		public function get vertexInstructions():uint {
@@ -58,7 +62,8 @@ package com.barliesque.agal {
 			return _vertexInstructions;
 		}
 		
-		/// A count of the number of instructions in the fragment shader
+		/// A count of the number of instructions in the fragment shader.
+		/// AGAL shaders are restricted to a max of 256 instructions.
 		/// If _fragmentShader() has not already been called, it will be called upon access of this property.
 		/// It is safe to access this property from _fragmentShader() without causing an infinte loop.
 		public function get fragmentInstructions():uint { 
@@ -129,6 +134,21 @@ package com.barliesque.agal {
 			return lines.join("\n");
 		}
 		
+		/// @private
+		private function countTokenLines(code:String):int {
+			if (code == null || code == "") return 0;
+			
+			var lines:Array = code.split("\n");
+			var count:int = 0;
+			for (var i:int = 0; i < lines.length; i++) {
+				if (code.substr(0, 1) != "/" && code.length > 0) {
+					// It's a line of code, so count it!
+					lines[i] = (++count) + ". \t " + code;
+				}
+			}
+			return count;
+		}
+		
 		//---------------------------------------------------------
 		
 		/// Use this function to manually assign, clear or append to the vertex opcode
@@ -140,6 +160,7 @@ package com.barliesque.agal {
 				} else {
 					Assembler.code = opcode;
 				}
+				Assembler.instructionCount = countTokenLines(Assembler.code);
 			} else {
 				if (append) {
 					if (_vertexOpcode == null) _vertexOpcode = "";
@@ -147,6 +168,7 @@ package com.barliesque.agal {
 				} else {
 					_vertexOpcode = opcode;
 				}
+				_vertexInstructions = countTokenLines(Assembler.code);
 			}
 		}
 		
@@ -159,6 +181,7 @@ package com.barliesque.agal {
 				} else {
 					Assembler.code = opcode;
 				}
+				Assembler.instructionCount = countTokenLines(Assembler.code);
 			} else {
 				if (append) {
 					if (_fragmentOpcode == null) _fragmentOpcode = "";
@@ -166,6 +189,7 @@ package com.barliesque.agal {
 				} else {
 					_fragmentOpcode = opcode;
 				}
+				_fragmentInstructions = countTokenLines(Assembler.code);
 			}
 		}
 		
@@ -240,17 +264,22 @@ package com.barliesque.agal {
 			return _program;
 		}
 		
+		/// @private
 		private function assembleVertex():ByteArray {
 			prepVertexShader();
 			return Assembler.assemble(_vertexOpcode);
 		}
 		
+		/// @private
 		private function assembleFragment():ByteArray {
 			prepFragmentShader();
 			return Assembler.assemble(_fragmentOpcode);
 		}
 		
-		/// Release all resources, including the shader program uploaded to the GPU.
+		/**
+		 * Release all resources, including the shader program uploaded to the GPU.
+		 * Calling upload() after dispose() has been called will result in the shader being recompiled and uploaded.
+		 */
 		public function dispose():void {
 			if (_program) _program.dispose();
 			_context = null;
@@ -277,28 +306,38 @@ package com.barliesque.agal {
 		
 		//{ REGISTERS:  Initialization and Access
 		
+		
+		static internal const ATTRIBUTE_COUNT:int = 8;
+		static internal const VCONST_COUNT:int = 128;
+		static internal const FCONST_COUNT:int = 28;
+		static internal const TEMP_COUNT:int = 8;
+		static internal const VARYING_COUNT:int = 8;
+		static internal const SAMPLER_COUNT:int = 8;
+		
+		
+		/// @private
 		private function init():void {
 			if (initialized) return;
 			var i:int;
 			
 			_ATTRIBUTE = new Vector.<IRegister>;
-			for (i = 0; i < 8; i++)  _ATTRIBUTE.push(new Register("ATTRIBUTE", "va" + i, null));
+			for (i = 0; i < ATTRIBUTE_COUNT; i++)  _ATTRIBUTE.push(new Register("ATTRIBUTE", "va", null, i));
 			_ATTRIBUTE.fixed = true;
 			
 			_CONST = new Vector.<IRegister>;
-			for (i = 0; i < 128; i++)  _CONST.push(new Register("CONST", "vc" + i, (i < 28) ? ("fc" + i) : null));
+			for (i = 0; i < VCONST_COUNT; i++)  _CONST.push(new Register("CONST", "vc", (i < FCONST_COUNT) ? "fc" : null, i));
 			_CONST.fixed = true;
 			
 			_TEMP = new Vector.<IRegister>;
-			for (i = 0; i < 8; i++)  _TEMP.push(new Register("TEMP", "vt" + i, "ft" + i));
+			for (i = 0; i < TEMP_COUNT; i++)  _TEMP.push(new Register("TEMP", "vt", "ft", i));
 			_TEMP.fixed = true;
 			
 			_VARYING = new Vector.<IRegister>;
-			for (i = 0; i < 8; i++)  _VARYING.push(new Register("VARYING", "v" + i, "v" + i));
+			for (i = 0; i < VARYING_COUNT; i++)  _VARYING.push(new Register("VARYING", "v", "v", i));
 			_VARYING.fixed = true;
 			
-			_SAMPLER = new Vector.<Sampler>;
-			for (i = 0; i < 8; i++)  _SAMPLER.push(new Sampler("fs" + i));
+			_SAMPLER = new Vector.<ISampler>;
+			for (i = 0; i < SAMPLER_COUNT; i++)  _SAMPLER.push(new Sampler(i));
 			_SAMPLER.fixed = true;
 			
 			_OUTPUT = new Register("OUTPUT", "op", "oc");
@@ -369,10 +408,9 @@ package com.barliesque.agal {
 		 * the function Context3D::setTextureAt(index:uint, texture:BitmapData) where
 		 * the index corresponds to the Fragment Sampler register number.
 		 */
-		protected function get SAMPLER():Vector.<Sampler> { return _SAMPLER; }
+		protected function get SAMPLER():Vector.<ISampler> { return _SAMPLER; }
 		
 		//} -----------------------------------------------------------------		
 		
 	}
 }
-
