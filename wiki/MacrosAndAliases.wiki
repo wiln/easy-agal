@@ -159,3 +159,6 @@ By the way, you can also access the generated opcode, with optional line numberi
 	trace("FRAGMENT SHADER");
 	trace(getFragmentOpcode(true));
 }}}
+
+
+*NOTE: [https://github.com/Barliesque/EasyAGAL This project has moved to GitHub]*
