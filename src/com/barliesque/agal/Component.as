@@ -1,22 +1,29 @@
 package com.barliesque.agal {
 	
 	/**
-	 * A class allowing single register component to be passed as parameters
+	 * A class allowing a single register component to be passed as a parameter
 	 * 
 	 * @author David Barlia
 	 */
 	internal class Component implements IComponent {
 		
 		private var _register:String;
+		private var _type:String;
 		
 		public function Component(register:Register, prop:String) {
 			_register = register.reg + "." + ComponentSelection.xyzwOnly(prop);
 			
-			if (!valid(prop)) throw new Error("c15 Illegal component selection: " + _register);  // This is possible:  CONST[0]._("q")
+			if (!valid(prop)) throw new Error("Illegal component selection: " + _register);  // This is possible:  CONST[0]._("q")
 		}
 		
+		/// @private
 		internal function get reg():String { 
 			return _register;
+		}
+		
+		/// @private
+		internal function get type():String { 
+			return _type;
 		}
 		
 		static public function valid(prop:String):Boolean {

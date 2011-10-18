@@ -19,13 +19,13 @@ package com.barliesque.agal {
 		private var _context:Context3D;
 		
 		// Register definitions
-		internal var _ATTRIBUTE:Vector.<IRegister>;
-		internal var _CONST:Vector.<IRegister>;
-		internal var _TEMP:Vector.<IRegister>;
-		internal var _OUTPUT:Register;
-		internal var _VARYING:Vector.<IRegister>;
-		internal var _SAMPLER:Vector.<ISampler>;
-		internal var initialized:Boolean = false;
+		static private var _ATTRIBUTE:Vector.<IRegister>;
+		static private var _CONST:Vector.<IRegister>;
+		static private var _TEMP:Vector.<IRegister>;
+		static private var _OUTPUT:Register;
+		static private var _VARYING:Vector.<IRegister>;
+		static private var _SAMPLER:Vector.<ISampler>;
+		static private var initialized:Boolean = false;
 		
 		private var debug:Boolean;
 		private var assemblyDebug:Boolean;
@@ -208,8 +208,8 @@ package com.barliesque.agal {
 		private function prepVertexShader():void {
 			if (Assembler.isPreparing) return;  // Prevent an inifinte loop if called during prep
 			Assembler.isPreparing = true;
-			init();
 			if (_vertexOpcode == null || _vertexOpcode == "") {
+				init();
 				_vertexOpcode = "";
 				Assembler.prep(true, assemblyDebug);
 				_vertexShader();
@@ -223,8 +223,8 @@ package com.barliesque.agal {
 		private function prepFragmentShader():void {
 			if (Assembler.isPreparing) return;  // Prevent an inifinte loop if called during prep
 			Assembler.isPreparing = true;
-			init();
 			if (_fragmentOpcode == null || _fragmentOpcode == "") {
+				init();
 				_fragmentOpcode = "";
 				Assembler.prep(false, assemblyDebug);
 				_fragmentShader();
@@ -307,12 +307,6 @@ package com.barliesque.agal {
 		//{ REGISTERS:  Initialization and Access
 		
 		
-		static internal const ATTRIBUTE_COUNT:int = 8;
-		static internal const VCONST_COUNT:int = 128;
-		static internal const FCONST_COUNT:int = 28;
-		static internal const TEMP_COUNT:int = 8;
-		static internal const VARYING_COUNT:int = 8;
-		static internal const SAMPLER_COUNT:int = 8;
 		
 		
 		/// @private
@@ -321,26 +315,26 @@ package com.barliesque.agal {
 			var i:int;
 			
 			_ATTRIBUTE = new Vector.<IRegister>;
-			for (i = 0; i < ATTRIBUTE_COUNT; i++)  _ATTRIBUTE.push(new Register("ATTRIBUTE", "va", null, i));
+			for (i = 0; i < RegisterType.ATTRIBUTE_COUNT; i++)  _ATTRIBUTE.push(new Register(RegisterType.ATTRIBUTE, "va", null, i));
 			_ATTRIBUTE.fixed = true;
 			
 			_CONST = new Vector.<IRegister>;
-			for (i = 0; i < VCONST_COUNT; i++)  _CONST.push(new Register("CONST", "vc", (i < FCONST_COUNT) ? "fc" : null, i));
+			for (i = 0; i < RegisterType.VCONST_COUNT; i++)  _CONST.push(new Register(RegisterType.CONST, "vc", (i < RegisterType.FCONST_COUNT) ? "fc" : null, i));
 			_CONST.fixed = true;
 			
 			_TEMP = new Vector.<IRegister>;
-			for (i = 0; i < TEMP_COUNT; i++)  _TEMP.push(new Register("TEMP", "vt", "ft", i));
+			for (i = 0; i < RegisterType.TEMP_COUNT; i++)  _TEMP.push(new Register(RegisterType.TEMP, "vt", "ft", i));
 			_TEMP.fixed = true;
 			
 			_VARYING = new Vector.<IRegister>;
-			for (i = 0; i < VARYING_COUNT; i++)  _VARYING.push(new Register("VARYING", "v", "v", i));
+			for (i = 0; i < RegisterType.VARYING_COUNT; i++)  _VARYING.push(new Register(RegisterType.VARYING, "v", "v", i));
 			_VARYING.fixed = true;
 			
 			_SAMPLER = new Vector.<ISampler>;
-			for (i = 0; i < SAMPLER_COUNT; i++)  _SAMPLER.push(new Sampler(i));
+			for (i = 0; i < RegisterType.SAMPLER_COUNT; i++)  _SAMPLER.push(new Sampler(i));
 			_SAMPLER.fixed = true;
 			
-			_OUTPUT = new Register("OUTPUT", "op", "oc");
+			_OUTPUT = new Register(RegisterType.OUTPUT, "op", "oc");
 			
 			initialized = true;
 		}
