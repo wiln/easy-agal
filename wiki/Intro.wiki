@@ -75,3 +75,6 @@ AGAL is not easy, but hopefully this library will make it easier, and assist you
 [http://labs.jam3.ca/2011/03/molehill-getting-started/ Molehill - Getting Started] by Mikko Haapoja
 
 [http://pgstudios.org/tutorials.php Tutorials] by Pixelante
+
+
+*NOTE: [https://github.com/Barliesque/EasyAGAL This project has moved to GitHub]*
